@@ -105,6 +105,34 @@
         radial-gradient(1200px 500px at 90% 0%, rgba(255,212,121,.07), transparent 60%),
         linear-gradient(180deg, #0a1230 0%, #05091b 70%, #030612 100%);
     }
+
+    /* List item styles */
+    .list-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .list-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(138, 225, 255, 0.15);
+    }
+    .list-icon {
+      font-size: 48px;
+      flex-shrink: 0;
+      opacity: 0.8;
+    }
+    .list-content h3 {
+      margin: 0 0 4px;
+      color: var(--accent);
+    }
+    .list-content p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -164,7 +192,9 @@
     <div class="container">
       <h2>Let’s Walk This Journey Together</h2>
       <div class="panel reveal">
-        <p>I’m Ali. I’m 24. Mostly, I’m someone who’s curious about life—and stubborn enough to chase big dreams, even when I’m not sure how they’ll play out.</p>
+        <p>Hi, I’m Ali—24, endlessly curious about life, and stubbornly chasing big dreams, even when the path ahead is fuzzy.
+This site isn’t a brag reel. It’s a glimpse into my world: a postcard from someone still figuring it out, with grand goals and nagging questions. Like, do I focus on ending extreme poverty here on Earth, or propelling humanity to the stars? Why choose? True progress means tackling both—feeding the hungry while reaching for the Moon, building clean water systems alongside rocket ships, teaching kids to read and dreaming of raising my daughter... maybe up there.
+I cut my teeth at Sharif University of Technology—the “get in hard, get out harder” kind of place that shaped me deeply. But that’s just one chapter. From cave fires to AI, I celebrate how far we’ve come (even if we sometimes forget). Here, I share where I’m at, what’s on my mind, and an open invite: Let’s explore, grow, and connect—together.</p>
       </div>
     </div>
   </section>
@@ -215,7 +245,30 @@
     <div class="container">
       <h2>Lists</h2>
       <div class="panel reveal">
-        <p>I love lists. They show me how far I’ve come—and how much is still ahead. You’ll find: Books I’ve Read; Movies and Series That Stayed With Me; Games I’ve Finished (I’m not really a gamer, but I love a good story and I finish what I start); Music I’ve Lived With. It’s not about collecting titles—it’s about tracking the journey.</p>
+        <p>I love lists. They show me how far I’ve come—and how much is still ahead. It’s not about collecting titles—it’s about tracking the journey. Dive into my curated collections below.</p>
+      </div>
+      <div class="grid cols-2">
+        <a href="https://www.notion.so/519709dc21614148a65ed1f0288e774b?v=8ac6511f280149f4b345a1d6564177a8" target="_blank" rel="noopener noreferrer" class="panel list-item reveal">
+          <span class="list-icon">📚</span>
+          <div class="list-content">
+            <h3>Books I’ve Read</h3>
+            <p>Stories, ideas, and wisdom that shaped my thinking.</p>
+          </div>
+        </a>
+        <a href="https://www.notion.so/Movie-Series-bd8914e54ba64ea19dcc6d2cfc946659" target="_blank" rel="noopener noreferrer" class="panel list-item reveal">
+          <span class="list-icon">🎥</span>
+          <div class="list-content">
+            <h3>Movies and Series That Stayed With Me</h3>
+            <p>Visual tales that lingered long after the credits rolled.</p>
+          </div>
+        </a>
+        <a href="https://www.notion.so/Video-Game-Organization-List-by-Ali-Ajam-6a01b354b7a145329fe7f91dc501ce84" target="_blank" rel="noopener noreferrer" class="panel list-item reveal">
+          <span class="list-icon">🎮</span>
+          <div class="list-content">
+            <h3>Games I’ve Finished</h3>
+            <p>Not a hardcore gamer, but I chase epic narratives to the end.</p>
+          </div>
+        </a>
       </div>
     </div>
   </section>
@@ -224,15 +277,15 @@
   <section id="lab" class="section">
     <div class="container">
       <h2>The Lab of Life</h2>
-      <p class="lead">I don’t wait for perfect plans—I test and learn.</p>
+      <p class="lead">The idea of this section is simple: I have some ideas about almost everything and I want to do them and test them.</p>
       <div class="timeline">
         <div class="spine" aria-hidden="true"></div>
         <div class="event reveal">
           <div class="dot" aria-hidden="true"></div>
           <div class="panel">
-            <h3>Experiments</h3>
-            <p>Sometimes it’s a YouTube idea. Sometimes it’s a business project. Sometimes it’s a sociology concept I want to explore. Sometimes it’s testing a new career path to see if it feels right for me.</p>
-            <p>It’s my personal Test & Learn system. A place to build real experiences—not just thoughts in my head. I’ll share the failures, wins, and lessons in between.</p>
+            <h3><a href="https://medium.com/@aliajam9731/list/the-human-lens-fd8c1f8d15d6" target="_blank" rel="noopener noreferrer">1. The Human Lens</a></h3>
+            <p>I talk to people and ask two simple yet profound questions: “What does happiness mean to you?” and “What’s your greatest fear?”</p>
+            <p>My goal is to have a hundred of these conversations — to capture raw human stories, emotions, and philosophies, and see what they reveal about how we all search for meaning.</p>
           </div>
         </div>
       </div>
