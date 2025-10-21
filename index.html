@@ -1,127 +1,435 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/tooplate-style.css">
-    <title>New Spot HTML Page by Tooplate</title>
-    <!--
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ali — A mind in motion</title>
+  <meta name="description" content="A small window into Ali’s world — journey, mission & dreams, learning, lists, experiments, notes, and a way to say hello." />
+  <style>
+    /* ==========================================
+       NEW PRESENTATION — "Story Scroll"
+       Faithful to the PDF sections, but cinematic.
+       One file, no deps. Mobile-first.
+    ========================================== */
 
-    Template 2107 New Spot
+    :root{
+      --bg:#0b0b11;        /* charcoal */
+      --ink:#12121e;       /* deep panel */
+      --paper:#141424;     /* card backdrop */
+      --text:#f6f7ff;      /* moonlight */
+      --muted:#a5acc7;     /* slate */
+      --accent:#8ae1ff;    /* cyan glow */
+      --accent-2:#ffd479;  /* warm glow */
+      --border: rgba(255,255,255,.10);
+      --panel: rgba(255,255,255,.04);
+      --shadow: 0 12px 32px rgba(0,0,0,.35);
+    }
 
-	http://www.tooplate.com/view/2107-new-spot
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 420px at 10% -10%, rgba(138,225,255,.12), transparent 60%),
+        radial-gradient(800px 340px at 100% 20%, rgba(255,212,121,.10), transparent 60%),
+        linear-gradient(180deg, #0a0a12 0%, #08080f 100%);
+      overflow-x:hidden;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    }
 
-    -->
+    a{color:inherit}
+    img{max-width:100%;display:block;border-radius:14px;border:1px solid var(--border)}
+
+    .container{max-width:960px;margin:0 auto;padding:0 18px}
+
+    /* Sticky chip nav for vertical story */
+    .chips{position:sticky;top:10px;z-index:50;margin:12px auto 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;max-width:720px}
+    .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:var(--panel);backdrop-filter: blur(8px);font-size:12px; text-decoration:none}
+    .chip.active{background:linear-gradient(180deg, rgba(138,225,255,.22), rgba(255,212,121,.18));box-shadow:0 6px 20px rgba(0,0,0,.25)}
+
+    /* Hero */
+    .hero{position:relative;padding:120px 0 60px}
+    .hero::after{content:"";position:absolute;inset:-10% -10% auto -10%;height:60%;pointer-events:none;background:
+      radial-gradient(600px 300px at 50% 20%, rgba(138,225,255,.14), transparent 60%),
+      radial-gradient(900px 420px at 50% -10%, rgba(255,212,121,.10), transparent 70%);
+      filter: blur(0.2px);}
+    .hero .center{max-width:900px;margin:0 auto;text-align:center}
+    .display{font-size:clamp(44px, 7.5vw, 96px);line-height:1.02;letter-spacing:-.03em;margin:8px 0}
+    .subtitle{font-size:clamp(18px, 2.6vw, 24px);color:var(--muted);margin-top:6px}
+    .glowtext{background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 22px rgba(138,225,255,.18)}
+    .under{display:inline-block;position:relative}
+    .under::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:10px;background:linear-gradient(90deg, rgba(138,225,255,.22), rgba(255,212,121,.18));border-radius:999px;filter:blur(.2px)}
+    .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+    .rotator{display:inline-block;min-width:ch;}
+    .rotator .word{display:inline-block;opacity:1;transition:opacity .5s ease, transform .5s ease;}
+    .rotator .word.fade{opacity:0;transform:translateY(8px)}
+    .keywords{overflow:hidden;mask-image:linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);-webkit-mask-image:linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);margin-top:18px}
+    .keywords .track{display:flex;gap:18px;white-space:nowrap;animation:scroll 22s linear infinite}
+    .tag{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:var(--panel);font-size:12px}
+    @keyframes scroll{from{transform:translateX(0)} to{transform:translateX(-50%)}}
+    h1{font-size:44px;line-height:1.06;margin:8px 0 6px;letter-spacing:-.02em}
+    h2{font-size:28px;margin:0 0 10px;letter-spacing:-.01em}
+    h3{font-size:18px;margin:0 0 6px}
+    p.lead{color:var(--muted);max-width:62ch}
+    .badge{display:inline-flex;align-items:center;gap:10px;padding:6px 12px;border:1px solid var(--border);border-radius:999px;background:var(--panel);font-size:12px; text-decoration:none}
+
+    /* Panels */
+    .panel{background:var(--panel);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);padding:20px}
+
+    /* Split grid */
+    .grid{display:grid;gap:16px}
+    .cols-2{grid-template-columns:1fr 1fr}
+    @media(max-width:820px){.cols-2{grid-template-columns:1fr}}
+
+    /* Constellation / Lab timeline */
+    .timeline{position:relative;padding:14px 0}
+    .spine{position:absolute;left:28px;top:0;bottom:0;border-left:2px dashed rgba(255,255,255,.22)}
+    .event{position:relative;padding-left:72px;margin:18px 0}
+    .dot{position:absolute;left:20px;top:6px;width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 6px rgba(138,225,255,.18), 0 0 22px rgba(138,225,255,.35)}
+
+    /* Reveal */
+    .reveal{opacity:0;transform:translateY(20px) scale(.985)}
+    .reveal.visible{opacity:1;transform:none;transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1)}
+
+    /* Footer */
+    .footer{padding:30px 0;text-align:center;color:var(--muted)}
+    /* --- Section spacing --- */
+    .section{padding:96px 0}
+    .hero{position:relative;padding:140px 0 80px}
+
+    /* --- Starfield canvas --- */
+    #starfield{position:fixed;inset:0;z-index:-1;display:block;
+      background:
+        radial-gradient(1600px 700px at 20% -10%, rgba(138,225,255,.10), transparent 60%),
+        radial-gradient(1200px 500px at 90% 0%, rgba(255,212,121,.07), transparent 60%),
+        linear-gradient(180deg, #0a1230 0%, #05091b 70%, #030612 100%);
+    }
+  </style>
 </head>
-
 <body>
-    <div class="tm-container mx-auto">
-        <section class="tm-section tm-section-1">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="tm-bg-circle-white tm-flex-center-v">
-                            <header class="text-center">
-                                <h1 class="tm-site-title">New SPOT</h1>
-                                <p class="tm-site-subtitle">Free HTML one-page template</p>
-                            </header>
-                            <p>This HTML page features alternating circular spots in a clean and attractive way. You may use this template for any purpose. Photos are from Unsplash website.</p>
-                            <p class="text-center mt-4 mb-0">
-                                <a data-scroll href="#tm-section-2" class="btn tm-btn-secondary">Continue...</a>
-                            </p>
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <!-- Sticky chips -->
+  <nav class="chips" id="chips">
+    <a class="chip" href="#home">Home</a>
+    <a class="chip" href="#about">About</a>
+    <a class="chip" href="#mission">Mission & Dreams</a>
+    <a class="chip" href="#student">Always a Student</a>
+    <a class="chip" href="#lists">Lists</a>
+    <a class="chip" href="#lab">The Lab of Life</a>
+    <a class="chip" href="#notes">Notes from Me</a>
+    <a class="chip" href="#hello">Say Hello</a>
+  </nav>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section id="tm-section-2" class="tm-section pt-2 pb-2">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-5 col-lg-6 tm-flex-center-v tm-text-container tm-section-left">
-                        <h2 class="tm-color-secondary mb-4">Lorem ipsum dolor site</h2>
-                        <p class="mb-4">Nullam erat dolor, ullamcorper et nisi nec, porta portitor nisi. Quisque lobortis sem ut facilisis
-                            mattis. Sed eu pellentesque sapien, a finibus eros. Nunc ut ultricies augue.</p>
-                        <p class="mb-5">Mauris sagittis dui arcu, sed luctus metus faucibus nec. Sed vulputate ipsum massa, ut dapibus purus
-                            volutpat vel. Interdum et malesuada fames ac ante.</p>
-                        <p class="text-right mb-0">
-                            <a href="#tm-section-3" class="btn tm-btn-secondary">Continue...</a>
-                        </p>
-                    </div>
-                    <div class="col-xl-7 col-lg-6 tm-circle-img-container">
-                        <img src="img/img-01.jpg" alt="Image" class="rounded-circle tm-circle-img">
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section id="tm-section-3" class="tm-section tm-section-3">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12 tm-section-2-right">
-                        <div class="tm-bg-circle-white tm-bg-circle-pad-2 tm-flex-center-v">
-                            <header>
-                                <h2 class="tm-color-primary">Duis vel vaius eros</h2>
-                            </header>
-                            <p>In hac habitasse platea dictumst. Ut tristique, purus vitae egestas hendrerit, tellus elit luctus
-                                lacus
-                            </p>
-                            <ul class="dashed">
-                                <li>Quisque lobortis sem ut facilisis mattis</li>
-                                <li>Sed eu pellentesque sapien</li>
-                                <li>Mauris sagittis dui arcu</li>
-                                <li>Sed luctus metus faucibus nec</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="tm-section pt-2 pb-3">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-4 col-lg-4 tm-flex-center-v tm-section-left">
-                        <form action="#" class="tm-contact-form" method="POST">
-                            <div class="form-group mb-4">
-                                <input type="text" id="contact_name" name="contact_name" class="form-control" placeholder="Name" required/>
-                            </div>
-                            <div class="form-group mb-4">
-                                <input type="email" id="contact_email" name="contact_email" class="form-control" placeholder="Email" required/>
-                            </div>
-                            <div class="form-group mb-5">
-                                <textarea rows="5" id="contact_message" name="contact_message" class="form-control" placeholder="Message..." required></textarea>
-                            </div>
-                            <div class="form-group mb-0 text-right">
-                                <button type="submit" class="btn tm-btn-primary tm-send-btn">Send</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-xl-8 col-lg-8 tm-circle-img-container tm-contact-right">
-                        <img src="img/img-02.jpg" alt="Image" class="rounded-circle tm-circle-img">
-                    </div>
-                </div>
-            </div>
-        </section>
-        <footer class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <p class="small mb-4 tm-footer-text">Copyright &copy; 2018 Company Name 
-                    
-                    | Design: <a rel="nofollow" href="https://www.tooplate.com" class="tm-footer-link">Tooplate</a>
-                    </p>
-                </div>
-            </div>
-        </footer>
+  <!-- HOME -->
+  <section id="home" class="hero">
+    <div class="container center">
+      <span class="badge">a small window into a big journey</span>
+      <h1 class="display">
+        <span class="under">Ali</span> —
+        <span class="glowtext">a mind in motion</span>
+      </h1>
+      <p class="subtitle">Not a résumé. A postcard. Glimpses of what I care about, how I learn, and why I’m curious about <span class="rotator"><span class="word">you</span></span> too.</p>
+      <div class="cta-row">
+        <a class="chip" href="#constellation">Walk the constellation</a>
+        <a class="chip" href="#hello">Say hi</a>
+      </div>
+      <div class="keywords" aria-hidden="true">
+        <div class="track">
+          <span class="tag">curiosity</span>
+          <span class="tag">kindness</span>
+          <span class="tag">learning</span>
+          <span class="tag">small bets</span>
+          <span class="tag">maps, not mazes</span>
+          <span class="tag">quiet courage</span>
+          <span class="tag">sharif chapter</span>
+          <span class="tag">writing models</span>
+          <span class="tag">real connection</span>
+          <span class="tag">curiosity</span>
+          <span class="tag">kindness</span>
+          <span class="tag">learning</span>
+          <span class="tag">small bets</span>
+          <span class="tag">maps, not mazes</span>
+          <span class="tag">quiet courage</span>
+          <span class="tag">sharif chapter</span>
+          <span class="tag">writing models</span>
+          <span class="tag">real connection</span>
+        </div>
+      </div>
     </div>
-    <script src="js/smooth-scroll.polyfills.min.js"></script>
-    <!-- https://github.com/cferdinandi/smooth-scroll -->
-    <script>
-        var scroll = new SmoothScroll('a[href*="#"]', {
-            easing: 'easeInOutQuart',
-            speed: 800
+  </section>
+
+  <!-- ABOUT / Let’s Walk This Journey Together -->
+  <section id="about" class="section">
+    <div class="container">
+      <h2>Let’s Walk This Journey Together</h2>
+      <div class="panel reveal">
+        <p>I’m Ali. I’m 24. Mostly, I’m someone who’s curious about life—and stubborn enough to chase big dreams, even when I’m not sure how they’ll play out.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION & DREAMS -->
+  <section id="mission" class="section">
+    <div class="container">
+      <h2>Mission & Dreams</h2>
+      <div class="grid cols-2">
+        <div class="panel reveal">
+          <h3>Building wealth and freedom</h3>
+          <p class="lead">I want to become a millionaire—not just for the money itself, but for the freedom and power it brings. Freedom to make choices, to create, and to live life on my terms. Having my own business is a big part of this—a place where I can build, experiment, and grow.</p>
+        </div>
+        <div class="panel reveal">
+          <h3>A personal project: seeing the world</h3>
+          <p class="lead">Travel is education—truly understanding this planet and its people. This journey helps me learn and grow beyond books and screens.</p>
+        </div>
+        <div class="panel reveal">
+          <h3>Lifting one million people out of extreme poverty</h3>
+          <p class="lead">Help at least one million people living on less than two dollars a day escape poverty—vaccinated, educated, well-fed, and with dignity—before I turn 40.</p>
+        </div>
+        <div class="panel reveal">
+          <h3>Studying at Harvard</h3>
+          <p class="lead">Learn with some of the brightest minds on the planet. Work together to make the world better—not just dream about it, but actually do it.</p>
+        </div>
+        <div class="panel reveal">
+          <h3>Welcoming my daughter on the Moon</h3>
+          <p class="lead">Be part of humanity’s next leap. A symbol of hope, progress, and the future we’re building beyond Earth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALWAYS A STUDENT -->
+  <section id="student" class="section">
+    <div class="container">
+      <h2>Always a Student</h2>
+      <div class="panel reveal">
+        <p>For me, learning isn’t just something you do in school—it’s life itself. I’m obsessed with growing, questioning, and figuring things out. Learning is how I stay alive—mentally, emotionally, spiritually.</p>
+        <p>I studied mechanical engineering at Sharif University of Technology, known as the toughest and most competitive university in Iran. Getting in was hard. Getting out was harder. But learning didn’t stop there. It won’t stop anywhere.</p>
+        <p>I read books. I listen to people smarter than me. I test ideas in real life—sometimes they work, sometimes they crash. Both teach me something. Right now, my learning path is a mix of business, technology, psychology, social impact, and life itself. If I’m standing still, something’s wrong. Growth is the point.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LISTS -->
+  <section id="lists" class="section">
+    <div class="container">
+      <h2>Lists</h2>
+      <div class="panel reveal">
+        <p>I love lists. They show me how far I’ve come—and how much is still ahead. You’ll find: Books I’ve Read; Movies and Series That Stayed With Me; Games I’ve Finished (I’m not really a gamer, but I love a good story and I finish what I start); Music I’ve Lived With. It’s not about collecting titles—it’s about tracking the journey.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAB OF LIFE (vertical timeline) -->
+  <section id="lab" class="section">
+    <div class="container">
+      <h2>The Lab of Life</h2>
+      <p class="lead">I don’t wait for perfect plans—I test and learn.</p>
+      <div class="timeline">
+        <div class="spine" aria-hidden="true"></div>
+        <div class="event reveal">
+          <div class="dot" aria-hidden="true"></div>
+          <div class="panel">
+            <h3>Experiments</h3>
+            <p>Sometimes it’s a YouTube idea. Sometimes it’s a business project. Sometimes it’s a sociology concept I want to explore. Sometimes it’s testing a new career path to see if it feels right for me.</p>
+            <p>It’s my personal Test & Learn system. A place to build real experiences—not just thoughts in my head. I’ll share the failures, wins, and lessons in between.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES FROM ME -->
+  <section id="notes" class="section">
+    <div class="container">
+      <h2>Notes from Me</h2>
+      <div class="panel reveal">
+        <p>I love reading—but honestly, I love writing just as much. I’ve built mental models about how the world works… or how I wish it worked. Maybe it’s engineering, maybe just my wiring—but I’m obsessed with making things make sense: breaking down ideas, organizing thoughts, creating systems out of chaos. Sometimes these turn into diagrams. Sometimes into math. Don’t panic—I grew up with math. It’s a comfort thing.</p>
+        <p>I don’t think I’m a great engineer, but I did learn one valuable skill: thinking in structures. Asking: “How does this really work?” That’s what you’ll find here—ideas, frameworks, and personal notes, my way of understanding life one model at a time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAY HELLO -->
+  <section id="hello" class="section">
+    <div class="container">
+      <h2>Say Hello</h2>
+      <div class="panel reveal">
+        <p>Have an idea? Want to share a thought? Or just say hi? This is the easiest way to reach me. No filters, no forms—just real connection. Drop me a message. I’ll read it, and if I can, I’ll reply. Let’s talk.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+          <a class="badge" href="mailto:aliajam9731@gmail.com">Email: aliajam9731@gmail.com</a>
+          <a class="badge" href="https://t.me/ali_ajam_2000" target="_blank" rel="noopener noreferrer">Telegram: @ali_ajam_2000</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">© <span id="year"></span> Ali • a small window into a big journey</footer>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Reveal on scroll
+    const rev = document.querySelectorAll('.reveal, .panel, h2');
+    rev.forEach((el,i)=>{ if(!el.classList.contains('reveal')) el.classList.add('reveal'); el.style.transitionDelay=((i%6)*60)+'ms'; });
+    const io = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } }) },{threshold:.12});
+    rev.forEach(el=>io.observe(el));
+
+    // Chip active state
+    const chips = Array.from(document.querySelectorAll('#chips .chip'));
+    const ids = chips.map(c=>c.getAttribute('href').slice(1));
+    const spy = new IntersectionObserver((ents)=>{
+      ents.forEach(e=>{
+        if(e.isIntersecting){
+          const id = e.target.id;
+          chips.forEach(c=>c.classList.toggle('active', c.getAttribute('href')==='#'+id));
+        }
+      });
+    },{rootMargin:'-35% 0px -55% 0px'});
+    ids.forEach(id=>{ const el=document.getElementById(id); if(el) spy.observe(el); });
+
+    // Rotating word in hero
+    (function(){
+      const words=["you","ideas","stories","strangers","friends" ];
+      const el=document.querySelector('.rotator .word');
+      let i=0;
+      setInterval(()=>{
+        if(!el) return;
+        el.classList.add('fade');
+        setTimeout(()=>{ i=(i+1)%words.length; el.textContent=words[i]; el.classList.remove('fade'); }, 480);
+      }, 1800);
+    })();
+
+    // Starfield with parallax + DARKER Moon
+    (function(){
+      const c=document.getElementById('starfield');
+      const ctx=c.getContext('2d');
+      let W,H,stars=[],craters=[]; const DPR=Math.min(window.devicePixelRatio||1,2);
+      const STAR_COUNT= window.innerWidth>1000 ? 240 : 150;
+      let scrollP=0; // 0..1 scroll progress
+
+      function resize(){
+        W=window.innerWidth; H=window.innerHeight;
+        c.width=W*DPR; c.height=H*DPR; c.style.width=W+'px'; c.style.height=H+'px';
+        ctx.setTransform(DPR,0,0,DPR,0,0);
+      }
+      function rand(a,b){ return a+Math.random()*(b-a); }
+      function init(){
+        // stars
+        stars.length=0;
+        for(let i=0;i<STAR_COUNT;i++){
+          stars.push({ x:rand(0,W), y:rand(0,H), r:rand(0.4,1.6), tw:rand(0,Math.PI*2), s:rand(0.5,1.5), d:rand(0.35,1.2)});
+        }
+        // crater seeds (normalized coords inside a unit circle)
+        craters = Array.from({length:24}, ()=>{
+          const t = Math.random()*Math.PI*2;
+          const r = Math.sqrt(Math.random())*0.8;
+          return { cx: Math.cos(t)*r, cy: Math.sin(t)*r, rr: rand(0.02,0.09), d: rand(0.3,0.9) };
         });
-    </script>
+      }
+      function lerp(a,b,t){ return a+(b-a)*t; }
+      function ease(t){ return t*(2-t); }
+
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+
+        // Parallax offsets based on scroll
+        const e = ease(scrollP);
+        const yOff = e * H * 0.85; // move stars down as we scroll
+        const xOff = e * 60;       // slight drift
+
+        // Soft moving nebula (kept subtle for readability)
+        const gy = H*(0.12 + 0.5*e);
+        const g=ctx.createRadialGradient(W*0.78, gy, 0, W*0.78, gy, W*0.6);
+        g.addColorStop(0,'rgba(138,225,255,0.04)'); g.addColorStop(1,'rgba(3,6,18,0)');
+        ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+        // Stars
+        for(const s of stars){
+          const y = (s.y + yOff * s.d) % H;
+          let x = (s.x + xOff * (s.d-0.5)) % W; if(x<0) x+=W;
+          const a=0.55+Math.sin(s.tw)*0.35; ctx.globalAlpha=a;
+          ctx.beginPath(); ctx.arc(x,y, s.r*(0.7+0.6*s.d), 0, Math.PI*2); ctx.fillStyle='#bcd8ff'; ctx.fill();
+          ctx.globalAlpha=1; s.tw+=0.02*s.s;
+        }
+
+        // MOON — darker, higher-contrast, scroll-scaled
+        const moonY = H * lerp(0.16, 0.24, e);
+        const R     = lerp(42, 210, e); // radius
+
+        // Dimmer halo for depth without washing the text
+        const halo = ctx.createRadialGradient(W*0.5, moonY, R*0.5, W*0.5, moonY, R*2.4);
+        halo.addColorStop(0, `rgba(250,246,220,${0.04 + 0.06*e})`);
+        halo.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = halo;
+        ctx.fillRect(0,0,W,H);
+
+        // Base sphere (cooler + darker grays)
+        ctx.beginPath(); ctx.arc(W*0.5, moonY, R, 0, Math.PI*2);
+        const base = ctx.createRadialGradient(
+          W*0.5 - R*0.25, moonY - R*0.20, R*0.22,
+          W*0.5,          moonY,          R
+        );
+        base.addColorStop(0, '#d0cec7');
+        base.addColorStop(0.6, '#9a9890');
+        base.addColorStop(1, '#6e6c66');
+        ctx.fillStyle = base;
+        ctx.fill();
+
+        // Clip to the Moon disc for further overlays
+        ctx.save();
+        const moonClip = new Path2D();
+        moonClip.arc(W*0.5, moonY, R, 0, Math.PI*2);
+        ctx.clip(moonClip);
+
+        // Stronger darkening that scales with scroll progress (e) for legibility
+        ctx.globalCompositeOperation = 'multiply';
+        ctx.fillStyle = `rgba(0,0,0,${0.18 + 0.22*e})`; // 0.18 → 0.40
+        ctx.fillRect(W*0.5 - R - 2, moonY - R - 2, R*2 + 4, R*2 + 4);
+
+        // Limb vignette to sell the sphere and tame the bright rim
+        const shade = ctx.createRadialGradient(
+          W*0.5 + R*0.25, moonY + R*0.18, R*0.12,
+          W*0.5,          moonY,          R*1.15
+        );
+        shade.addColorStop(0, 'rgba(0,0,0,0.35)');
+        shade.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.fillStyle = shade;
+        ctx.fillRect(W*0.5 - R - 2, moonY - R - 2, R*2 + 4, R*2 + 4);
+
+        // Subtle craters (dark basins + faint rims)
+        for(const q of craters){
+          const cx = W*0.5 + q.cx * R;
+          const cy = moonY + q.cy * R;
+          const r  = q.rr * R;
+          // inner dark basin
+          const cg = ctx.createRadialGradient(cx - r*0.25, cy - r*0.2, r*0.15, cx, cy, r);
+          cg.addColorStop(0, 'rgba(70,70,78,0.25)');
+          cg.addColorStop(0.8,'rgba(0,0,0,0)');
+          ctx.fillStyle = cg;
+          ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
+          // bright rim
+          ctx.strokeStyle = 'rgba(245,245,240,0.16)';
+          ctx.lineWidth = Math.max(0.6, r*0.07);
+          ctx.beginPath(); ctx.arc(cx, cy, r, Math.PI*0.15, Math.PI*1.15); ctx.stroke();
+        }
+        ctx.restore();
+
+        requestAnimationFrame(draw);
+      }
+
+      function onScroll(){
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        scrollP = max>0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      }
+
+      resize(); init(); draw();
+      window.addEventListener('resize', ()=>{ resize(); init(); });
+      window.addEventListener('scroll', onScroll, {passive:true});
+      onScroll();
+    })();
+  </script>
 </body>
 </html>
