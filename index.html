@@ -86,6 +86,11 @@
     .media-lead{color:#e8eaff; opacity:.92; margin:0 0 10px}
     .meta{display:flex;gap:8px;flex-wrap:wrap}
     .meta .pill{font-size:12px;padding:6px 10px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.06)}
+    .status-in-progress {
+      background: rgba(34, 197, 94, .2);
+      border-color: rgba(34, 197, 94, .4);
+      color: #10b981;
+    }
     .media-link{position:absolute; inset:0; z-index:3} /* full-card link */
 
     /* subtle tilt on mouse */
@@ -302,6 +307,20 @@
             <h3><a href="https://medium.com/@aliajam9731/list/the-human-lens-fd8c1f8d15d6" target="_blank" rel="noopener noreferrer">1. The Human Lens</a></h3>
             <p>I talk to people and ask two simple yet profound questions: “What does happiness mean to you?” and “What’s your greatest fear?”</p>
             <p>My goal is to have a hundred of these conversations — to capture raw human stories, emotions, and philosophies, and see what they reveal about how we all search for meaning.</p>
+            <div class="meta">
+              <span class="pill status-in-progress">In progress</span>
+            </div>
+          </div>
+        </div>
+        <div class="event reveal">
+          <div class="dot" aria-hidden="true"></div>
+          <div class="panel">
+            <h3>2. Inviting Ali Bandari for a Webinar at Sharif University</h3>
+            <p>Organizing an inspiring webinar featuring Ali Bandari at Sharif University to bring fresh ideas, spark discussions, and connect students with innovative thinkers.</p>
+            <p>My goal is to successfully host the event, engage the community, and create a space for meaningful exchange and inspiration.</p>
+            <div class="meta">
+              <span class="pill status-in-progress">In progress</span>
+            </div>
           </div>
         </div>
       </div>
@@ -391,6 +410,16 @@
         ctx.globalCompositeOperation='multiply'; ctx.fillStyle=`rgba(0,0,0,${0.18+0.22*e})`; ctx.fillRect(W*0.5 - R - 2, moonY - R - 2, R*2 + 4, R*2 + 4);
         const shade=ctx.createRadialGradient(W*0.5 + R*0.25, moonY + R*0.18, R*0.12, W*0.5, moonY, R*1.15);
         shade.addColorStop(0,'rgba(0,0,0,0.35)'); shade.addColorStop(1,'rgba(0,0,0,0)'); ctx.globalCompositeOperation='source-over'; ctx.fillStyle=shade; ctx.fillRect(W*0.5 - R - 2, moonY - R - 2, R*2 + 4, R*2 + 4);
+        // Draw craters
+        for(const crater of craters) {
+          const cx = W * 0.5 + crater.cx * R;
+          const cy = moonY + crater.cy * R;
+          const crr = crater.rr * R * crater.d;
+          ctx.beginPath();
+          ctx.arc(cx, cy, crr, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(0,0,0,${0.4 * crater.d})`;
+          ctx.fill();
+        }
         requestAnimationFrame(draw); ctx.restore();
       }
       function onScroll(){ const max=document.documentElement.scrollHeight - window.innerHeight; scrollP=max>0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0 }
