@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Deep Journey — Scatterboard</title>
+<meta name="description" content="An unruly, curious scatterboard of prompts inspired by The Deep Journey." />
+<style>
+  :root{
+    --bg:#0a0c14;
+    --ink:#0f1322;
+    --paper:#12182c;
+    --text:#f6f7ff;
+    --muted:#a8afc9;
+    --accent:#8ae1ff;
+    --accent2:#ffd479;
+    --border:rgba(255,255,255,.12);
+    --note:#161c34;
+    --shadow:0 18px 48px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    color:var(--text);
+    font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial;
+    min-height:100svh;
+    background:
+      radial-gradient(1200px 600px at 90% -10%, rgba(255,212,121,.14), transparent 60%),
+      radial-gradient(900px 520px at 0% 10%, rgba(138,225,255,.14), transparent 60%),
+      linear-gradient(180deg,#070a16 0%,#050812 100%);
+    overflow-x:hidden;
+  }
+
+  /* subtle noise */
+  .noise{position:fixed;inset:0;pointer-events:none;opacity:.06;mix-blend-mode:soft-light;z-index:2;
+    background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence baseFrequency=".7" numOctaves="2" seed="3"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity=".4"/></svg>');
+    background-size:220px 220px;
+    animation:grain 12s steps(6) infinite;}
+  @keyframes grain{0%{transform:translate(0,0)} 100%{transform:translate(-12px,8px)}}
+
+  .wrap{max-width:1200px;margin:0 auto;padding:20px 16px 60px;position:relative;z-index:1}
+  .top{
+    display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:6px 0 8px;
+  }
+  .left, .right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{
+    text-decoration:none;color:var(--text);font-size:14px;
+    padding:8px 12px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.05);
+    backdrop-filter:blur(8px);display:inline-flex;gap:8px;align-items:center;cursor:pointer;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(138,225,255,.18)}
+  .title{
+    font-size:clamp(26px,4.2vw,52px);letter-spacing:-.02em;margin:8px 0 0;
+  }
+  .lead{color:var(--muted);max-width:70ch;margin:6px 0 10px}
+
+  /* doodle underline */
+  .glow{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .scribble{height:10px;display:block}
+  .scribble svg{width:220px;height:14px;opacity:.8;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+
+  /* BOARD */
+  .board{
+    position:relative;
+    height:1200px; /* will be adjusted by JS */
+    border:1px dashed rgba(255,255,255,.08);
+    border-radius:16px;
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 1px, transparent 1px 36px),
+      linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+    overflow:hidden;
+  }
+
+  .note{
+    position:absolute; width:260px; min-height:140px;
+    background:linear-gradient(180deg, var(--note), rgba(255,255,255,.03));
+    border:1px solid var(--border);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    padding:14px 14px 16px;
+    cursor:grab; user-select:none;
+    transform-origin:50% 40%;
+    transition:box-shadow .2s ease, transform .2s ease;
+  }
+  .note:active{cursor:grabbing}
+  .note:hover{box-shadow:0 24px 64px rgba(138,225,255,.18)}
+  .note h3{margin:0 0 6px;font-size:16px;color:var(--accent)}
+  .note p{margin:0;color:var(--muted);font-size:14px}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .tag{font-size:11px;padding:4px 7px;border:1px dashed rgba(255,255,255,.16);border-radius:9px;background:rgba(255,255,255,.04)}
+  .pin{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #ffd479, #d68a24 60%, #7a3f0e);box-shadow:0 10px 18px rgba(0,0,0,.45)}
+  .corner{position:absolute;right:-1px;bottom:-1px;width:32px;height:32px;background:linear-gradient(135deg, transparent 50%, rgba(255,255,255,.08) 50%);mask:linear-gradient(135deg, black 48%, transparent 48%)}
+
+  /* question modal */
+  .modal{position:fixed;inset:0;display:none;place-items:center;padding:22px;background:rgba(5,7,14,.55);backdrop-filter:blur(8px);z-index:50}
+  .modal.show{display:grid;animation:fade .18s ease}
+  @keyframes fade{from{opacity:0} to{opacity:1}}
+  .dialog{
+    width:min(880px, 96vw);
+    border:1px solid rgba(138,225,255,.35);
+    border-radius:20px;
+    background:linear-gradient(180deg, rgba(18,24,44,.95), rgba(14,18,32,.95));
+    box-shadow:0 28px 80px rgba(0,0,0,.6);
+    overflow:hidden;
+  }
+  .dialog header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border)}
+  .dialog header h4{margin:0;font-size:18px}
+  .close{appearance:none;border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--text);padding:6px 10px;border-radius:10px;cursor:pointer}
+  .dialog .body{padding:14px 16px 20px}
+  .qs{display:grid;gap:10px;grid-template-columns:repeat(2,1fr)}
+  @media (max-width:720px){.qs{grid-template-columns:1fr}}
+  .q{padding:10px 12px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.03)}
+  .foot{display:flex;gap:10px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--border);background:rgba(255,255,255,.02)}
+  .ghost,.primary{display:inline-flex;align-items:center;gap:8px;text-decoration:none;padding:8px 12px;border-radius:12px;font-size:14px}
+  .ghost{border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--text)}
+  .primary{border:1px solid rgba(138,225,255,.45);background:linear-gradient(180deg, rgba(138,225,255,.20), rgba(255,212,121,.12));color:var(--text)}
+  .ghost:hover,.primary:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(138,225,255,.18)}
+
+  /* mobile fallback: stack notes neatly */
+  @media (max-width:820px){
+    .board{height:auto;padding:14px}
+    .note{position:relative;margin:10px 0;transform:none !important;left:auto !important;top:auto !important}
+    .pin{display:none}
+  }
+  .footer{color:var(--muted);text-align:center;padding:32px 0 14px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+
+<div class="wrap">
+  <div class="top">
+    <div class="left">
+      <a class="btn" href="./index.html">← Back</a>
+      <button class="btn" id="shuffle">⟳ Reshuffle</button>
+      <button class="btn" id="tidy">▤ Tidy a bit</button>
+    </div>
+    <div class="right">
+      <a class="btn" href="./The Deep Journey.pdf" target="_blank" rel="noopener">Open full guide (PDF)</a>
+    </div>
+  </div>
+
+  <h1 class="title">The <span class="glow">Deep Journey</span></h1>
+  <p class="lead">A messy board for curious minds: grab the sticky notes, drag them around, open a card, pocket a few questions—then go outside and test them in real life.</p>
+  <span class="scribble" aria-hidden="true">
+    <svg viewBox="0 0 220 18" fill="none">
+      <path d="M3 12 C 40 2, 80 20, 120 8 S 200 2, 216 10" stroke="url(#g)" stroke-width="3" stroke-linecap="round"/>
+      <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8ae1ff"/><stop offset="1" stop-color="#ffd479"/></linearGradient></defs>
+    </svg>
+  </span>
+
+  <div class="board" id="board" aria-label="Scatterboard of topic notes"></div>
+
+  <footer class="footer">© <span id="year"></span> The Deep Journey — made to be explored outside.</footer>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal" aria-hidden="true" aria-label="Question set dialog">
+  <div class="dialog" role="dialog" aria-modal="true">
+    <header>
+      <h4 id="modalTitle">Topic</h4>
+      <button class="close" id="closeBtn" aria-label="Close">✕</button>
+    </header>
+    <div class="body"><div class="qs" id="qs"></div></div>
+    <div class="foot">
+      <a class="ghost" href="./index.html">← Back to home</a>
+      <a class="primary" href="./The Deep Journey.pdf" target="_blank" rel="noopener">Open full guide (PDF)</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Data (themes + sample questions)
+  const THEMES = [
+    {
+      title:"Culture & Values",
+      desc:"What is sacred? What’s joke-safe? Sniff the national ‘tone’ here first.",
+      tags:["values","pride","taboos","humor","strangers"],
+      qs:[
+        "What do people value most—family, work, freedom, tradition?",
+        "What creates national pride—history, arts, sports, inventions?",
+        "Where are the cultural red lines? What’s taboo or offensive?",
+        "How do people treat strangers—warm, neutral, reserved?",
+        "How do humor and sarcasm work here?"
+      ]
+    },
+    {
+      title:"Economy & Business",
+      desc:"Follow money, respect, and friction; societies reveal themselves via incentives.",
+      tags:["livelihoods","status","founders","wealth","playbook"],
+      qs:[
+        "How do ordinary people make a living?",
+        "Which professions are most respected—and why?",
+        "Is starting a business easy? Where are the frictions?",
+        "How do the richest actually earn their money here?",
+        "If you were local, what’s the smartest path to wealth?"
+      ]
+    },
+    {
+      title:"Urban Life & Daily Living",
+      desc:"Transit, prices, safety, rhythm—feel the city’s pulse before judging it.",
+      tags:["transport","costs","center vs. periphery","safety","routine"],
+      qs:[
+        "How do people get around? Is public transport truly used?",
+        "What income feels ‘comfortable’ for an average life?",
+        "Capital vs. small cities—how different does life feel?",
+        "How safe do people feel? Try the night-walk test.",
+        "What’s a typical daily routine?"
+      ]
+    },
+    {
+      title:"Education & Knowledge",
+      desc:"Curiosity density matters. It predicts the future better than slogans.",
+      tags:["schooling","curiosity","skills","diplomas"],
+      qs:[
+        "Is education a priority or just a credential?",
+        "What in school genuinely shapes worldview?",
+        "Are people curiosity-seeking or comfort-seeking?",
+        "Is higher ed knowledge or diploma-hunting?",
+        "How do people gain skills outside school?"
+      ]
+    },
+    {
+      title:"Politics & Power",
+      desc:"Legitimacy, mobility, dissent—stress tests for institutions.",
+      tags:["trust","issues","civic talk","mobility","dissent"],
+      qs:[
+        "Do people trust the government? Why or why not?",
+        "What’s the biggest political pain point?",
+        "Do citizens publicly discuss politics?",
+        "Can someone rise from a lower class to power?",
+        "When people disagree—protest, apathy, debate?"
+      ]
+    },
+    {
+      title:"Arts & Social Life",
+      desc:"Where people spend free time reveals the collective daydream.",
+      tags:["fun","icons","time","dating","religion"],
+      qs:[
+        "How do people have fun—sports, nightlife, cafes, nature?",
+        "Who are the cultural icons?",
+        "Workaholic or relaxed—how much free time exists?",
+        "How does dating work? What are the unspoken rules?",
+        "What role does religion play in leisure?"
+      ]
+    },
+    {
+      title:"Deep Insights",
+      desc:"Hidden levers, non-obvious truths, and respectful integration.",
+      tags:["secrets","integration","causes","levers","blind spots"],
+      qs:[
+        "What’s a local secret outsiders miss?",
+        "How would you truly integrate as a local?",
+        "Why is the country like this—history, resources, decisions?",
+        "If you could change one thing to help most people, what is it?",
+        "What do many citizens not realize about their own country?"
+      ]
+    }
+  ];
+
+  const board = document.getElementById('board');
+  const modal = document.getElementById('modal');
+  const closeBtn = document.getElementById('closeBtn');
+  const qsWrap = document.getElementById('qs');
+  const modalTitle = document.getElementById('modalTitle');
+
+  // create notes
+  const NOTES = [];
+  THEMES.forEach((t,i)=>{
+    const el = document.createElement('article');
+    el.className = 'note';
+    el.innerHTML = `
+      <span class="pin" aria-hidden="true"></span>
+      <div class="corner" aria-hidden="true"></div>
+      <h3>${t.title}</h3>
+      <p>${t.desc}</p>
+      <div class="tags">${t.tags.map(x=>`<span class="tag">${x}</span>`).join('')}</div>
+    `;
+    el.dataset.index = i;
+    board.appendChild(el);
+    NOTES.push({el, data:t});
+    el.addEventListener('dblclick', ()=>openModal(t.title, t.qs));
+    el.addEventListener('click', (e)=>{
+      // tiny playful wiggle
+      if(e.detail===1){
+        el.style.transition = 'transform .12s ease';
+        el.style.transform += ' translateY(-2px) rotate(0.5deg)';
+        setTimeout(()=>{ el.style.transform = el.style.transform.replace(' translateY(-2px) rotate(0.5deg)',''); el.style.transition=''; }, 140);
+      }
+    });
+    makeDraggable(el);
+  });
+
+  function rand(a,b){ return a + Math.random()*(b-a); }
+
+  function layout(messy=true){
+    const W = board.clientWidth;
+    const cols = Math.max(3, Math.floor(W/300));
+    const colW = W/cols;
+    const rows = Math.ceil((NOTES.length/cols)*2.2);
+    const H = Math.max(800, rows*180);
+    board.style.height = H+'px';
+
+    NOTES.forEach((n,idx)=>{
+      const c = Math.floor(Math.random()*cols);
+      const baseX = c*colW + 16;
+      const baseY = (Math.floor(idx/cols)*220) + rand(20, 120);
+      const x = messy ? baseX + rand(-18, 22) : baseX + 4;
+      const y = messy ? baseY + rand(-30, 60) : baseY;
+      const r = messy ? rand(-6,6) : rand(-1,1);
+      n.el.style.left = x+'px';
+      n.el.style.top  = y+'px';
+      n.el.style.transform = `rotate(${r}deg)`;
+      n.el.style.zIndex = 5 + Math.floor(rand(0,40));
+      n.el.dataset.x = x; n.el.dataset.y = y;
+    });
+  }
+
+  function openModal(title, items){
+    modalTitle.textContent = title;
+    qsWrap.innerHTML = '';
+    const arr = items.slice().sort(()=>Math.random()-.5);
+    arr.forEach(t=>{
+      const div = document.createElement('div'); div.className='q'; div.textContent=t; qsWrap.appendChild(div);
+    });
+    modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
+  }
+  function closeModal(){ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); }
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+  window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+  // drag (desktop)
+  function makeDraggable(el){
+    let sx=0, sy=0, ox=0, oy=0, dragging=false;
+    el.addEventListener('pointerdown', (e)=>{
+      if(window.matchMedia('(max-width:820px)').matches) return;
+      dragging=true; el.setPointerCapture(e.pointerId);
+      sx=e.clientX; sy=e.clientY;
+      ox=parseFloat(el.dataset.x||el.style.left||0); oy=parseFloat(el.dataset.y||el.style.top||0);
+      el.style.transition='none'; el.style.zIndex=999;
+    });
+    el.addEventListener('pointermove', (e)=>{
+      if(!dragging) return;
+      const nx = ox + (e.clientX - sx);
+      const ny = oy + (e.clientY - sy);
+      el.style.left = nx+'px'; el.style.top = ny+'px';
+      el.dataset.x = nx; el.dataset.y = ny;
+    });
+    el.addEventListener('pointerup', (e)=>{ dragging=false; el.releasePointerCapture(e.pointerId); el.style.transition=''; el.style.zIndex=50; });
+  }
+
+  // controls
+  document.getElementById('shuffle').addEventListener('click', ()=>layout(true));
+  document.getElementById('tidy').addEventListener('click', ()=>layout(false));
+
+  // initial
+  layout(true);
+  window.addEventListener('resize', ()=>layout(true), {passive:true});
+</script>
+</body>
+</html>
